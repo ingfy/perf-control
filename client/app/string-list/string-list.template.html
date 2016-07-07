@@ -1,0 +1,12 @@
+<div class="string-list">
+	<div class="input-group">
+		<input data-bind="attr: {id: id}, textInput: currentValue" type="text" />
+		<button data-bind="click: add, text: addText, enable: currentValue"></button>
+	</div>
+	<ul data-bind="foreach: array">
+		<li>
+			<span data-bind="text: $data"></span>
+			<button data-bind="text: $parent.removeText, click: function () { $parent.remove($index); }"></button>
+		</li>
+	</ul>
+</div>

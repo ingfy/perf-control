@@ -1,0 +1,225 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body, legend, input { font: 16px Helvetica, Arial; }
+
+.page {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 1em;
+}
+
+.page-section {
+	width: 100%;
+}
+
+.field-group {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.form-group {
+	padding: .5em 1em;
+	width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+	.desktop-half-width {
+		width: 50%;
+	}
+}
+
+.graphs-fullscreen .page-section.data-section {
+	display: none;
+}
+
+.graphs-fullscreen .page-section.graphs-section {
+	background-color: white;
+	padding: 1em;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+}
+
+.graphs-fullscreen .page-section.graphs-section .data-view {	
+    height: 100%;
+}
+
+.graphs {
+    display: flex;
+    flex-direction: column;
+}
+
+.graphs .graph {
+    flex-grow: 1;
+}
+
+.graphs-section.{
+    position: relative;
+}
+
+.data-view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.data-view .graphs, .data-view .highlight-stats {
+    flex-grow: 1;
+    max-height: 50%;
+}
+.form-group label {
+	font-weight: bold;
+	display: block;
+	padding-bottom: .5em;
+}
+
+.form-group input[type="text"], 
+.form-group input[type="number"] {
+	font-size: 1em;
+	border-radius: 5px;
+	padding: .33em;
+	width: 100%;
+	display: block;
+	box-shadow: none;
+}
+
+.fullscreen-button {
+    right: 0;
+    position: absolute;
+	padding: .2em .5em;
+}
+
+form  {
+	padding: 1em;
+}
+
+form fieldset {
+	margin: 1em 0;
+}
+
+button {
+	min-width: 100px;
+	min-height: 40px;
+}
+
+table {
+	width: 100%;
+	text-align: left;
+	margin: 1em 0;
+}
+
+table.bordered-table {	
+	border-collapse: collapse;
+}
+
+table.bordered-table thead tr:last-child, table tbody tr:last-child {
+	border-bottom: 1px solid black;
+}
+
+table.bordered-table thead tr:first-child {
+	border-top: 1px solid black;
+}
+
+table tr {
+	border: 0;
+}
+
+table th {
+	font-weight: bold;	
+}
+
+table td, table th {
+	padding: .5em;
+}
+
+/* string-list component */
+.string-list .input-group {
+    display: flex;
+}
+
+.string-list button {
+    padding: .1em 1em;
+    min-height: 2.5em;
+    min-width: 3em;
+}
+
+.string-list ul {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+.string-list ul li {
+    margin: .5em 0;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.string-list ul li button {
+}
+
+.string-list ul li span {
+    flex-grow: 1;
+}
+
+/* small-highlights */
+.small-highlights {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.hightlighted-statistic {
+    flex-grow: 1;
+    font-size: calc(100vh/4/2/1.5);
+    height: calc(100vh/4);
+    text-align: center;
+}
+
+.hightlighted-statistic h3 {
+    position: relative;
+    font-size: .5em;
+}
+
+.hightlighted-statistic.current-run .current-run-progress {
+    position: relative;
+    left: -1ex;
+}
+
+.hightlighted-statistic.current-run .current-run-visited {
+    font-size: 1.2em;
+    position: relative;
+    top: 0;
+    right: -.25em;
+    display: inline-block;
+    text-align: right;
+    min-width: 3ex;
+}
+
+.hightlighted-statistic.current-run .current-run-remaining {
+    font-size: .8em;
+    position: relative;
+    top: .5em;
+    left: -.25em;
+    display: inline-block;
+    text-align: left;
+    min-width: 3ex;
+}
+
+.hightlighted-statistic.current-run .separator {
+	position: relative;
+	top: .25em;
+    transform-origin: 0;
+    transform: rotate(20deg);
+    display: inline-block;
+}
+
+.hightlighted-statistic .num-errors span {
+	color: green;
+}
+.hightlighted-statistic .num-errors span.has-errors {
+	color: red;
+}

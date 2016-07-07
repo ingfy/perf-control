@@ -1,0 +1,19 @@
+{
+  "name": "perf-control",
+  "version": "1.0.0",
+  "description": "A small application for crawling a web page and timing the request",
+  "main": "server/app.js",
+  "scripts": {
+	"release": "cd client && npm install && gulp clean && gulp && cd ..",
+	"postinstall": "cd client && npm install && gulp clean && gulp && cd ..",
+	"start": "cd server && start http://localhost:3000 && node app"
+  },
+  "repository": "git+https://github.com/ingfy/perf-control.git",
+  "author": "Yngve Svalestuen",
+  "license": "ISC",
+  "dependencies": {
+    "crawlr": "git+https://github.com/ingfy/crawrl.git",
+    "express": "^4.14.0",
+    "socket.io": "^1.4.8"
+  }
+}

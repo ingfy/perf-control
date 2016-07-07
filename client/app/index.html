@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>perf-control</title>
+	<link rel="stylesheet" href="main.css" />
+	<style>	
+	</style>
+</head>
+<body>	
+	<h1>Performance Viewer <small data-bind="visible: state" style="display: none;">(<span data-bind="text: state"></span>)</small></h1>
+	
+	<div class="page" data-bind="css: {'graphs-fullscreen': graphsFullscreen}">
+		<section class="page-section data-section desktop-half-width">		
+			<form method="POST">
+				<fieldset>
+					<legend>Crawling Settings</legend>
+					<div class="field-group">
+						<div class="form-group">
+							<label for="baseUrl">Base URL</label>
+							<input id="baseUrl" type="text" required 
+									placeholder="https://www.bergans.com"
+									data-bind="disable: running, textInput: baseUrl" />
+						</div>
+						<div class="form-group">
+							<label for="ignorePaths">Ignore Patterns</label>
+							<string-list params="id: ignorePaths, array: ignorePaths"></string-list>
+						</div>
+						<div class="form-group">
+							<label for="ignoreQuery">Strip Query Strings</label>
+							<input id="ignoreQuery" type="checkbox" checked="checked"
+									data-bind="disable: running, checked: ignoreQuery" />
+						</div>
+					</div>		
+				</fieldset>
+				<fieldset>
+					<legend>Run settings</legend>
+					<div class="field-group">
+						<div class="form-group desktop-half-width">
+							<label for="numRuns">Number of runs</label>
+							<input id="numRuns" type="number" min="1" value="1"
+									data-bind="disable: running() || runForever(), value: numRuns" />
+						</div>
+						<div class="form-group desktop-half-width">
+							<label for="runForever">Run indefinitely</label>
+							<input id="runForever" type="checkbox"
+									data-bind="disable: running, checked: runForever" />
+						</div>
+						<div class="form-group desktop-half-width">
+							<label for="numRunsStored">Runs stored</label>
+							<input id="numRunsStored" type="number" min="1" value="20"
+									data-bind="value: numRunsStored" />
+						</div>
+					</div>
+				</fieldset>
+				<button type="submit" id="start" data-bind="click: start, disable: running">Start</button>
+				<button type="submit" id="stop" data-bind="click: stop, disable: !running()">Stop</button>
+				<button id="clear" data-bind="click: clearData, disable: running">Clear Data</button>
+			</form>
+			
+			<table class="live-data-summary" data-bind="visible: hasRun" style="display: none;">
+			<tbody>
+				<tr>
+					<th>Run #</th>
+					<td data-bind="text: run"></td>
+				</tr>
+				<tr>
+					<th>Visited</th>
+					<td><span data-bind="text: activeNumVisited"></span>/<span data-bind="text: activeRemaining"></span></td>
+			</tbody>
+			</table>
+			
+			<table class="stats bordered-table" data-bind="visible: hasRun" style="display: none;">
+			<thead>
+				<tr>
+					<th>Run</th>
+					<th># pages</th>
+					<th>Average (seconds)</th>
+					<th>Median (seconds)</th>
+					<th>Total (seconds)</th>
+					<th>Maximum (seconds)</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: {data: stats() && stats().slice(0).reverse(), as: 'stat'}">
+				<tr>
+					<td data-bind="text: stat.runIndex + 1"></td>
+					<td data-bind="text: stat.numPages"></td>
+					<td data-bind="seconds: stat.mean"></td>
+					<td data-bind="seconds: stat.median"></td>
+					<td data-bind="seconds: stat.total"></td>
+					<td data-bind="seconds: stat.max"></td>
+				</tr>
+			</tbody>
+			</table>
+			
+			<table class="load-errors bordered-table" data-bind="visible: hasRun() && highlights.loadErrors().length" style="display: none;">
+			<thead>
+				<th>Run #</th>
+				<th>URL</th>
+				<th>Load Time (ms)</th>
+				<th>Timestamp</th>
+				<th>Error Code</th>
+			</thead>
+			<tbody data-bind="foreach: highlights.loadErrors()">
+				<tr>
+					<td data-bind="text: $data.run + 1"></td>
+					<td data-bind="relativeLink: {base: $parent.baseUrl(), path: $data.url}"></td>
+					<td data-bind="text: $data.time"></td>
+					<td data-bind="timestamp: $data.date"></td>
+					<td><strong data-bind="text: $data.errorCode"></strong></td>
+				</tr>
+			</tbody>
+			</table>
+			
+			<table class="live-data bordered-table" data-bind="visible: hasRun" style="display: none;">
+			<thead>
+				<tr>
+					<th>URL</th>
+					<th>Load Time (ms)</th>
+					<th>Timestamp</th>
+					<th>Error Code</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: {data: activeData() && activeData().slice(0).reverse(), as: 'row'}">
+				<tr>
+					<td data-bind="relativeLink: {base: $parent.baseUrl(), path: row.url}"></td>
+					<td data-bind="text: row.time"></td>
+					<td data-bind="timestamp: row.date"></td>
+					<td data-bind="text: row.errorCode"></td>
+				</tr>
+			</tbody>
+			</table>
+		</section>
+		
+		<section class="page-section graphs-section desktop-half-width">			
+			<button class="fullscreen-button" data-bind="click: toggleGraphsFullscreen, text: graphsFullscreen() ? 'Close Fullscreen' : 'Open Fullscreen'">Fullscreen</button>
+			
+			<div class="data-view">			
+				<div class="graphs" data-bind="foreach: graphs">
+					<h2 data-bind="text: $data.title"></h2>
+					
+					<div class="graph">
+						<canvas data-bind="chart: $data.data, resizeOn: $parent.chartAreaChanged"></canvas>
+					</div>
+				</div>
+
+				<div class="hightlight-stats">
+					<div class="slowest-pages">
+						<table class="bordered-table">
+							<thead>
+								<tr>
+									<th><h3>Slowest Pages</h3></th>
+									<th>Average (seconds)</th>
+									<th>Worst (seconds)</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: highlights.slowestPages">
+								<tr>
+									<td data-bind="relativeLink: {base: $parent.baseUrl(), path: $data.url}"></td>
+									<td data-bind="seconds: $data.mean"></td>
+									<td data-bind="seconds: $data.max"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="small-highlights">
+					<div class="current-run hightlighted-statistic">
+						<h3>Run <span data-bind="text: run() + 1"></span></h3>
+						<div class="current-run-progress">
+							<span class="current-run-visited" data-bind="text: activeNumVisited"></span>
+							<span class="separator">/</span>
+							<span class="current-run-remaining" data-bind="text: activeRemaining() || '—'"></span>
+						</div>
+					</div>
+					<div class="load-errors hightlighted-statistic">
+						<h3>Errors</h3>
+						<div class="num-errors">
+							<span data-bind="text: highlights.loadErrors().length, css: {'has-errors': highlights.loadErrors().length > 0}"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	
+	<script src="bundle.js"></script>
+	<script>
+		app.init();
+	</script>
+</body>
+</html>

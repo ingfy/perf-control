@@ -1,0 +1,28 @@
+{
+  "name": "perf-control-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git+https://github.com/ingfy/perf-control.git",
+  "author": "Yngve Svalestuen",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "del": "^2.2.1",
+    "gulp": "^3.9.1",
+    "gulp-rev": "^7.1.0",
+    "gulp-rev-collector": "^1.0.4",
+    "gulp-sourcemaps": "^1.6.0",
+    "stringify": "^5.1.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "chart.js": "^2.1.6",
+    "knockout": "^3.4.0",
+    "socket.io-client": "^1.4.8"
+  }
+}
